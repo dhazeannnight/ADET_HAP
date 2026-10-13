@@ -1,0 +1,47 @@
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { CategoryService } from './category.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
+@Controller('category')
+export class CategoryController {
+	constructor(private categoryService: CategoryService) {}
+
+	// Get all categories (protected)
+	@UseGuards(JwtAuthGuard)
+	@Get()
+	async getAll() {
+		return this.categoryService.getAll();
+	}
+
+	// Get single category by ID (protected)
+	@UseGuards(JwtAuthGuard)
+	@Get(':id')
+	async getOne(@Param('id') id: string) {
+		return this.categoryService.findById(+id);
+	}
+
+	// Create category (open - for demo)
+	@Post()
+	async create(@Body() body: { category_name: string;
+		category_type: string; category_section: string;
+		category_status: string;}) {
+		return this.categoryService.createCategory(
+			body.category_name, body.category_type,
+			body.category_section, body.category_status
+		);
+	}
+
+	// Update category (protected)
+	@UseGuards(JwtAuthGuard)
+	@Put(':id')
+	async update(@Param('id') id: string, @Body() body: any) {
+		return this.categoryService.updateCategory(+id, body);
+	}
+
+	// Delete category (protected)
+	@UseGuards(JwtAuthGuard)
+	@Delete(':id')
+	async remove(@Param('id') id: string) {
+		return this.categoryService.deleteCategory(+id);
+	}
+}
