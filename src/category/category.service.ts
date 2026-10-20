@@ -17,8 +17,7 @@ export class CategoryService {
 		const [result] = await this.pool().execute<OkPacket>(
 			`INSERT INTO category (category_name, category_type,
 			category_section, category_status) VALUES (?, ?, ?, ?)`,
-			[category_name, category_type,
-			category_section, category_status],
+			[category_name, category_type, category_section, category_status],
 		);
 		return { id: result.insertId, category_name, category_type, category_section, category_status };
 	}

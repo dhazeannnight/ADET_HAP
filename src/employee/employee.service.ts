@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { RowDataPacket, OkPacket } from 'mysql2';
-import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class EmployeeService {
