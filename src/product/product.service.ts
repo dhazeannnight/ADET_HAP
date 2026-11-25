@@ -10,21 +10,21 @@ export class ProductService {
 
 	async createProduct(category_id: number,
 		product_name: string, 
-        product_brand: string,
+		product_brand: string | null,
+		product_price: number | null,
 		product_type: string,
 		product_gender: string,
 		product_age_group: string,
 		product_status: string) {
-        // const hashed = await bcrypt.hash(password, 10);
 
 		const [result] = await this.pool().execute<OkPacket>(
-			`INSERT INTO product (category_id, product_name, product_brand, product_type, product_gender, 
-            product_age_group, product_status) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-			[category_id, product_name, product_brand, product_type,
+			`INSERT INTO product (category_id, product_name, product_brand, product_price, product_type, product_gender, 
+			product_age_group, product_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+			[category_id, product_name, product_brand ?? null, product_price ?? null, product_type,
 			product_gender, product_age_group, product_status],
 		);
-		return { id: result.insertId, category_id, product_name, product_brand, product_type, 
-            product_gender, product_age_group, product_status };
+		return { id: result.insertId, category_id, product_name, product_brand: product_brand ?? null, 
+			product_price: product_price ?? null, product_type, product_gender, product_age_group, product_status };
 	}
 
 	async findById(id: number) {
@@ -43,8 +43,8 @@ export class ProductService {
 	}
 
 	async updateProduct(id: number, partial: {
-		category_id?: number; product_name?: string; product_brand?: string;
-		product_type?: string; product_gender?: string;
+		category_id?: number; product_name?: string; product_brand?: string | null;
+		product_price?: number | null; product_type?: string; product_gender?: string;
 		product_age_group?: string; product_status?: string;}) {
 		const fields: string[] = [];
 		const values: any[] = [];
@@ -54,32 +54,37 @@ export class ProductService {
 			values.push(partial.category_id);
 		}
 
-		if (partial.product_name) {
+		if (partial.product_name !== undefined) {
 			fields.push('product_name = ?');
 			values.push(partial.product_name);
 		}
 
-		if (partial.product_brand) {
+		if (partial.product_brand !== undefined) {
 			fields.push('product_brand = ?');
-			values.push(partial.product_brand);
+			values.push(partial.product_brand || null);
 		}
 
-		if (partial.product_type) {
+		if (partial.product_price !== undefined) {
+			fields.push('product_price = ?');
+			values.push(partial.product_price ?? null);
+		}
+
+		if (partial.product_type !== undefined) {
 			fields.push('product_type = ?');
 			values.push(partial.product_type);
 		}
 
-		if (partial.product_gender) {
+		if (partial.product_gender !== undefined) {
 			fields.push('product_gender = ?');
 			values.push(partial.product_gender);
 		}
 
-		if (partial.product_age_group) {
+		if (partial.product_age_group !== undefined) {
 			fields.push('product_age_group = ?');
 			values.push(partial.product_age_group);
 		}
 
-		if (partial.product_status) {
+		if (partial.product_status !== undefined) {
 			fields.push('product_status = ?');
 			values.push(partial.product_status);
 		}

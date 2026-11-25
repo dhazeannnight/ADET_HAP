@@ -22,11 +22,12 @@ export class ProductController {
 
 	// Create product (open - for demo)
 	@Post()
-	async create(@Body() body: { category_id: number; product_name: string; product_brand: string;
-		product_type: string; product_gender: string; product_age_group: string; product_status: string;}) {
+	async create(@Body() body: { category_id: number; product_name: string; product_brand?: string | null;
+		product_price?: number | null; product_type: string; product_gender: string; 
+		product_age_group: string; product_status: string;}) {
 		return this.productService.createProduct(
-			body.category_id, body.product_name, body.product_brand,
-			body.product_type, body.product_gender,
+			body.category_id, body.product_name, body.product_brand ?? null,
+			body.product_price ?? null, body.product_type, body.product_gender,
 			body.product_age_group, body.product_status
 		);
 	}
